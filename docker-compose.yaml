@@ -2,7 +2,7 @@
 version: "3.7"
 
 services:
-  go-todo:
+  go-tube:
     container_name: go-tube
     image: capcom6/go-tube:dev
     build:
@@ -17,5 +17,5 @@ services:
       - go-tube-network
 
 networks:
-  go-todo-network:
+  go-tube-network:
     name: go-tube-network
