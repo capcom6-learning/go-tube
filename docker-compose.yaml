@@ -1,0 +1,21 @@
+# docker-compose.yaml
+version: "3.7"
+
+services:
+  go-todo:
+    container_name: go-tube
+    image: capcom6/go-tube:dev
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+      - "2345:2345"
+    networks:
+      - go-tube-network
+
+networks:
+  go-todo-network:
+    name: go-tube-network
