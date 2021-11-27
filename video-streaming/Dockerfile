@@ -36,7 +36,7 @@ FROM alpine:3 as prod
 WORKDIR /srv
 
 COPY ./video /srv/video
-COPY ./.env /srv/.env
+# COPY ./.env /srv/.env
 COPY --from=builder /app/go-tube /srv/go-tube
 
 # EXPOSE 5000

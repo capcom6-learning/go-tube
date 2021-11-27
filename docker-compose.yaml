@@ -1,21 +1,14 @@
-# docker-compose.yaml
-version: "3.7"
+version: '3'
 
 services:
-  go-tube:
-    container_name: go-tube
-    image: capcom6/go-tube:dev
+  video-streaming:
+    image: video-streaming
     build:
-      context: .
-      target: dev
-    volumes:
-      - .:/app
+      context: ./video-streaming
+      dockerfile: Dockerfile
+    container_name: video-streaming
     ports:
-      - "5000:5000"
-      - "2345:2345"
-    networks:
-      - go-tube-network
-
-networks:
-  go-tube-network:
-    name: go-tube-network
+      - "4000:80"
+    environment:
+      - PORT=80
+    restart: 'no'
