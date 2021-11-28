@@ -1,4 +1,4 @@
-# NodeTube
+# GoTube
 
 Example project from ["Bootstrapping Microservices with Docker, Kubernetes, and Terraform"](https://www.manning.com/books/bootstrapping-microservices-with-docker-kubernetes-and-terraform) book.
 
