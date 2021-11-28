@@ -1,4 +1,4 @@
-module github.com/capcom6/go-tube
+module github.com/capcom6/go-tube/video-streaming
 
 go 1.17
 
