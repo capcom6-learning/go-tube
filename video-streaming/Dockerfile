@@ -13,32 +13,22 @@ RUN apk update \
     git \
     && update-ca-certificates
 
-# FROM base AS dev
-# WORKDIR /app
-
-# RUN go get -u github.com/cosmtrek/air && go install github.com/go-delve/delve/cmd/dlv@latest
-# EXPOSE 5000
-# EXPOSE 2345
-
-# ENTRYPOINT ["air"]
-
 FROM base AS builder
 WORKDIR /app
 
-COPY . /app
+COPY go.* /app
 RUN go mod download \
     && go mod verify
 
-RUN go build -o go-tube -a .
+COPY . /app
+
+RUN go build -o video-streaming -a .
 
 FROM alpine:3 as prod
 
 WORKDIR /srv
 
-COPY ./video /srv/video
-# COPY ./.env /srv/.env
-COPY --from=builder /app/go-tube /srv/go-tube
+COPY .env /srv/.env
+COPY --from=builder /app/video-streaming /srv/video-streaming
 
-# EXPOSE 5000
-
-ENTRYPOINT ["/srv/go-tube"]
+ENTRYPOINT ["/srv/video-streaming"]
