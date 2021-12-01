@@ -16,9 +16,11 @@ RUN apk update \
 FROM base AS builder
 WORKDIR /app
 
-COPY . /app
+COPY go.* /app
 RUN go mod download \
     && go mod verify
+
+COPY . /app
 
 RUN go build -o video-storage -a .
 
