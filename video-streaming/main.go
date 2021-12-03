@@ -21,34 +21,9 @@ type VideoRecord struct {
 }
 
 func main() {
-	port := config.Config("PORT")
-	if port == "" {
-		panic("PORT enviroment variable not set")
-	}
+	config := config.GetConfig()
 
-	storageHost := config.Config("VIDEO_STORAGE_HOST")
-	storagePort, err := strconv.ParseInt(config.Config("VIDEO_STORAGE_PORT"), 10, 32)
-	if err != nil {
-		panic(err)
-	}
-
-	if storageHost == "" {
-		panic("VIDEO_STORAGE_HOST enviroment variable not set")
-	}
-	if storagePort == 0 {
-		panic("VIDEO_STORAGE_PORT enviroment variable not set")
-	}
-
-	dbhost := config.Config("DBHOST")
-	dbname := config.Config("DBNAME")
-	if dbhost == "" {
-		panic("DBHOST enviroment variable not set")
-	}
-	if dbname == "" {
-		panic("DBNAME enviroment variable not set")
-	}
-
-	mongodb, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dbhost))
+	mongodb, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(config.DbHost))
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +32,7 @@ func main() {
 			panic(err)
 		}
 	}()
-	collection := mongodb.Database(dbname).Collection("videos")
+	collection := mongodb.Database(config.DbName).Collection("videos")
 
 	app := fiber.New()
 
@@ -76,7 +51,7 @@ func main() {
 			return err
 		}
 
-		url := fmt.Sprintf("http://%s:%d/video?path=%s", storageHost, storagePort, video.Path)
+		url := fmt.Sprintf("http://%s:%d/video?path=%s", config.VideoStorageHost, config.VideoStoragePort, video.Path)
 
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", url, nil)
@@ -115,5 +90,5 @@ func main() {
 		return c.SendStream(resp.Body, length)
 	})
 
-	log.Fatal(app.Listen(":" + config.Config("PORT")))
+	log.Fatal(app.Listen(fmt.Sprintf(":%d", config.Port)))
 }
