@@ -6,20 +6,16 @@ services:
     build:
       context: ./video-streaming
       dockerfile: Dockerfile
-      target: dev
+      target: prod
     container_name: go-video-streaming
     ports:
       - "4000:80"
-      - "5000:2345"
     environment:
       - PORT=80
       - VIDEO_STORAGE_HOST=video-storage
       - VIDEO_STORAGE_PORT=80
       - DBHOST=mongodb://db:27017
       - DBNAME=video-streaming
-    volumes:
-      - "./video-streaming:/app"
-      - "/tmp/video-streaming/go-cache:/go/pkg"
     restart: 'no'
 
   video-storage:
@@ -27,14 +23,10 @@ services:
     build:
       context: ./video-storage-azure
       dockerfile: Dockerfile
-      target: dev
+      target: prod
     container_name: go-video-storage
     ports:
       - "4001:80"
-      - "5001:2345"
-    volumes:
-      - "./video-storage-azure:/app"
-      - "/tmp/video-storage-azure/go-cache:/go/pkg"
     environment:
       - PORT=80
     restart: 'no'
