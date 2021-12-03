@@ -28,7 +28,7 @@ FROM alpine:3 as prod
 
 WORKDIR /srv
 
-COPY .env /srv/.env
+# COPY .env /srv/.env
 COPY --from=builder /app/video-streaming /srv/video-streaming
 
 ENTRYPOINT ["/srv/video-streaming"]
