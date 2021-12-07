@@ -14,6 +14,8 @@ type Config struct {
 	VideoStoragePort int16
 	DbHost           string
 	DbName           string
+	HistoryHost      string
+	HistoryPort      int16
 }
 
 var instance *Config
@@ -48,12 +50,24 @@ func newConfig() *Config {
 		panic("Specify DBNAME enviroment variable")
 	}
 
+	historyHost := os.Getenv("HISTORY_HOST")
+	if videoStorageHost == "" {
+		panic("Specify HISTORY_HOST enviroment variable")
+	}
+
+	historyPort, err := strconv.ParseInt(os.Getenv("HISTORY_PORT"), 10, 16)
+	if err != nil {
+		panic("Incorrect port in HISTORY_PORT enviroment variable")
+	}
+
 	return &Config{
 		Port:             int16(port),
 		VideoStorageHost: videoStorageHost,
 		VideoStoragePort: int16(videoStoragePort),
 		DbHost:           dbHost,
 		DbName:           dbName,
+		HistoryHost:      historyHost,
+		HistoryPort:      int16(historyPort),
 	}
 }
 

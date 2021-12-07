@@ -7,7 +7,8 @@ import (
 	"strconv"
 
 	"github.com/capcom6/go-tube/video-streaming/config"
-	"github.com/capcom6/go-tube/video-streaming/internal/data/video"
+	"github.com/capcom6/go-tube/video-streaming/internal/history"
+	"github.com/capcom6/go-tube/video-streaming/internal/video"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -20,6 +21,8 @@ func main() {
 	}
 
 	defer repository.Disconnect()
+
+	historyService := history.NewService(config.HistoryHost, config.HistoryPort)
 
 	app := fiber.New()
 
@@ -35,6 +38,11 @@ func main() {
 				return c.SendStatus(404)
 			}
 			return c.SendStatus(500)
+		}
+
+		contentRange := c.Get("Range", "")
+		if contentRange == "" {
+			historyService.Send(video.Path)
 		}
 
 		url := fmt.Sprintf("http://%s:%d/video?path=%s", config.VideoStorageHost, config.VideoStoragePort, video.Path)
