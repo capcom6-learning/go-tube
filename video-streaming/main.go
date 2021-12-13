@@ -22,7 +22,7 @@ func main() {
 
 	defer repository.Disconnect()
 
-	historyService := history.NewService(config.HistoryHost, config.HistoryPort)
+	historyService := history.NewService(config.RabbitMQ)
 
 	app := fiber.New()
 

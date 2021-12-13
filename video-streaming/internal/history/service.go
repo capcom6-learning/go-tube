@@ -1,32 +1,62 @@
 package history
 
 import (
-	"fmt"
+	"encoding/json"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/streadway/amqp"
 )
 
 type Service struct {
-	host string
-	port int16
+	rabbitMQ string
 }
 
-func NewService(host string, port int16) *Service {
+type message struct {
+	VideoPath string `json:"videoPath"`
+}
+
+func NewService(rabbitMQ string) *Service {
 	return &Service{
-		host: host,
-		port: port,
+		rabbitMQ: rabbitMQ,
 	}
 }
 
 func (s *Service) Send(videoPath string) error {
 
-	agent := fiber.Post(fmt.Sprintf("http://%s:%d/viewed", s.host, s.port))
-	agent.JSON(fiber.Map{"videoPath": videoPath})
+	conn, err := amqp.Dial(s.rabbitMQ)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
 
-	_, _, err := agent.String()
+	ch, err := conn.Channel()
+	if err != nil {
+		return err
+	}
+	defer ch.Close()
 
-	if len(err) > 0 {
-		return err[0]
+	if err := ch.ExchangeDeclare("viewed", "fanout", true, false, false, false, nil); err != nil {
+		return err
+	}
+
+	msg := message{
+		VideoPath: videoPath,
+	}
+
+	bytes, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	err = ch.Publish(
+		"viewed", // exchange
+		"",       // routing key
+		false,    // mandatory
+		false,    // immediate
+		amqp.Publishing{
+			Body: bytes,
+		})
+	if err != nil {
+		return err
 	}
 
 	return nil

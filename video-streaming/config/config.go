@@ -14,8 +14,7 @@ type Config struct {
 	VideoStoragePort int16
 	DbHost           string
 	DbName           string
-	HistoryHost      string
-	HistoryPort      int16
+	RabbitMQ         string
 }
 
 var instance *Config
@@ -50,14 +49,9 @@ func newConfig() *Config {
 		panic("Specify DBNAME enviroment variable")
 	}
 
-	historyHost := os.Getenv("HISTORY_HOST")
-	if videoStorageHost == "" {
-		panic("Specify HISTORY_HOST enviroment variable")
-	}
-
-	historyPort, err := strconv.ParseInt(os.Getenv("HISTORY_PORT"), 10, 16)
-	if err != nil {
-		panic("Incorrect port in HISTORY_PORT enviroment variable")
+	rabbitMQ := os.Getenv("RABBIT")
+	if rabbitMQ == "" {
+		panic("Specify RABBIT enviroment variable")
 	}
 
 	return &Config{
@@ -66,8 +60,7 @@ func newConfig() *Config {
 		VideoStoragePort: int16(videoStoragePort),
 		DbHost:           dbHost,
 		DbName:           dbName,
-		HistoryHost:      historyHost,
-		HistoryPort:      int16(historyPort),
+		RabbitMQ:         rabbitMQ,
 	}
 }
 
