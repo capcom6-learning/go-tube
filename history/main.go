@@ -27,5 +27,15 @@ func main() {
 	historyHandlers := history.NewHandlers(repository)
 	app.Post("/viewed", historyHandlers.Post)
 
+	rabbit, err := history.NewRabbit(config.Rabbit, repository)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rabbit.Listen(); err != nil {
+		log.Fatal(err)
+	}
+	defer rabbit.Close()
+
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", config.Port)))
 }

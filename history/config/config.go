@@ -12,6 +12,7 @@ type Config struct {
 	Port   int16
 	DbHost string
 	DbName string
+	Rabbit string
 }
 
 var instance *Config
@@ -36,10 +37,16 @@ func newConfig() *Config {
 		panic("Specify DBNAME enviroment variable")
 	}
 
+	rabbit := os.Getenv("RABBIT")
+	if rabbit == "" {
+		panic("Specify RABBIT enviroment variable")
+	}
+
 	return &Config{
 		Port:   int16(port),
 		DbHost: dbHost,
 		DbName: dbName,
+		Rabbit: rabbit,
 	}
 }
 

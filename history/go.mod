@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gofiber/fiber/v2 v2.23.0
 	github.com/joho/godotenv v1.4.0
+	github.com/streadway/amqp v1.0.0
 	go.mongodb.org/mongo-driver v1.8.0
 )
 
