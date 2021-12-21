@@ -77,3 +77,19 @@ services:
       - 5672
       - 15672
     restart: always
+
+  recommendations:
+    image: go-recommendations
+    build:
+      context: ./recommendations
+      dockerfile: Dockerfile
+      target: dev
+    container_name: go-recommendations
+    ports:
+      - "5004:2345"
+    volumes:
+      - "./recommendations:/app"
+      - "/tmp/recommendations/go-cache:/go/pkg"
+    environment:
+      - RABBIT=amqp://guest:guest@rabbit:5672
+    restart: 'no'

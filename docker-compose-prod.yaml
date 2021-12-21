@@ -65,3 +65,14 @@ services:
       - 5672
       - 15672
     restart: always
+
+  recommendations:
+    image: go-recommendations
+    build:
+      context: ./recommendations
+      dockerfile: Dockerfile
+      target: prod
+    container_name: go-recommendations
+    environment:
+      - RABBIT=amqp://guest:guest@rabbit:5672
+    restart: 'no'
