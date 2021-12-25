@@ -76,3 +76,19 @@ services:
     environment:
       - RABBIT=amqp://guest:guest@rabbit:5672
     restart: 'no'
+
+  metadata:
+    image: go-metadata
+    build:
+      context: ./metadata
+      dockerfile: Dockerfile
+      target: prod
+    container_name: go-metadata
+    ports:
+      - "4005:80"
+    environment:
+      - PORT=80
+      - DBHOST=mongodb://db:27017
+      - DBNAME=metadata
+    restart: 'no'
+    
