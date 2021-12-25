@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	config := config.GetConfig()
+	config := config.GetConfig(".env")
 	repository, err := internal.NewMetadataRepository(config.DbHost, config.DbName)
 	if err != nil {
 		panic(err)

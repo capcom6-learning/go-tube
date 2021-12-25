@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
@@ -16,9 +15,9 @@ type Config struct {
 
 var instance *Config
 
-func newConfig() *Config {
-	if err := godotenv.Load(".env"); err != nil {
-		fmt.Println("Error loading .env file")
+func newConfig(cfgName string) *Config {
+	if cfgName != "" {
+		godotenv.Load(cfgName)
 	}
 
 	port, err := strconv.ParseInt(os.Getenv("PORT"), 10, 16)
@@ -43,9 +42,9 @@ func newConfig() *Config {
 	}
 }
 
-func GetConfig() Config {
+func GetConfig(cfgName string) Config {
 	if instance == nil {
-		instance = newConfig()
+		instance = newConfig(cfgName)
 	}
 
 	return *instance
