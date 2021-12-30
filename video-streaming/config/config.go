@@ -12,8 +12,7 @@ type Config struct {
 	Port             int16
 	VideoStorageHost string
 	VideoStoragePort int16
-	DbHost           string
-	DbName           string
+	MetadataUrl      string
 	RabbitMQ         string
 }
 
@@ -39,14 +38,9 @@ func newConfig() *Config {
 		panic("Incorrect port in VIDEO_STORAGE_PORT enviroment variable")
 	}
 
-	dbHost := os.Getenv("DBHOST")
-	if dbHost == "" {
-		panic("Specify DBHOST enviroment variable")
-	}
-
-	dbName := os.Getenv("DBNAME")
-	if dbName == "" {
-		panic("Specify DBNAME enviroment variable")
+	metadataUrl := os.Getenv("METADATA_URL")
+	if metadataUrl == "" {
+		panic("Specify METADATA_URL enviroment variable")
 	}
 
 	rabbitMQ := os.Getenv("RABBIT")
@@ -58,8 +52,7 @@ func newConfig() *Config {
 		Port:             int16(port),
 		VideoStorageHost: videoStorageHost,
 		VideoStoragePort: int16(videoStoragePort),
-		DbHost:           dbHost,
-		DbName:           dbName,
+		MetadataUrl:      metadataUrl,
 		RabbitMQ:         rabbitMQ,
 	}
 }

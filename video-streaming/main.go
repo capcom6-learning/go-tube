@@ -8,20 +8,14 @@ import (
 
 	"github.com/capcom6/go-tube/video-streaming/config"
 	"github.com/capcom6/go-tube/video-streaming/internal/history"
-	"github.com/capcom6/go-tube/video-streaming/internal/video"
+	"github.com/capcom6/go-tube/video-streaming/internal/metadata"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func main() {
 	config := config.GetConfig()
-	repository, err := video.NewVideoRepository(config.DbHost, config.DbName)
-	if err != nil {
-		panic(err)
-	}
 
-	defer repository.Disconnect()
-
+	metadataService := metadata.NewMetadataService(config.MetadataUrl)
 	historyService := history.NewService(config.RabbitMQ)
 
 	app := fiber.New()
@@ -32,20 +26,22 @@ func main() {
 			return c.SendStatus(404)
 		}
 
-		video, err := repository.GetVideo(videoId)
+		metadata, err := metadataService.GetMetadataById(videoId)
 		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				return c.SendStatus(404)
-			}
-			return c.SendStatus(500)
+			fmt.Printf("Error getting metadata: %v", err)
+			return c.SendStatus(http.StatusInternalServerError)
+		}
+
+		if metadata == nil {
+			return c.SendStatus(http.StatusNotFound)
 		}
 
 		contentRange := c.Get("Range", "")
 		if contentRange == "" {
-			historyService.Send(video.Path)
+			historyService.Send(metadata.VideoPath)
 		}
 
-		url := fmt.Sprintf("http://%s:%d/video?path=%s", config.VideoStorageHost, config.VideoStoragePort, video.Path)
+		url := fmt.Sprintf("http://%s:%d/video?path=%s", config.VideoStorageHost, config.VideoStoragePort, metadata.VideoPath)
 
 		client := &http.Client{}
 		req, err := http.NewRequest("GET", url, nil)
