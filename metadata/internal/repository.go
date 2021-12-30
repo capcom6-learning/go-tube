@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -54,21 +55,23 @@ func (r *MetadataRepository) SelectMetadata() ([]Metadata, error) {
 	}
 
 	return res, nil
+}
 
-	// objectId, err := primitive.ObjectIDFromHex(id)
-	// if err != nil {
-	// 	return nil, err
-	// }
+func (r *MetadataRepository) GetById(id string) (*Metadata, error) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
 
-	// ctx, cancelFunc := makeContext()
-	// defer cancelFunc()
+	ctx, cancelFunc := makeContext()
+	defer cancelFunc()
 
-	// var video Video
-	// if err := r.collection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&video); err != nil {
-	// 	return nil, err
-	// }
+	var metadata Metadata
+	if err := r.collection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&metadata); err != nil {
+		return nil, err
+	}
 
-	// return &video, nil
+	return &metadata, nil
 }
 
 func (r *MetadataRepository) Disconnect() error {
