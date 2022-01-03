@@ -24,9 +24,5 @@ func main() {
 
 	gateway.Register(app, metadataService)
 
-	// app.Get("/", func(c *fiber.Ctx) error {
-	// 	return c.SendString("Gateway service online")
-	// })
-
 	log.Fatal(app.Listen(fmt.Sprintf(":%d", config.Port)))
 }

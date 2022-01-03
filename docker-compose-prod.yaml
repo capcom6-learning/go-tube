@@ -90,4 +90,18 @@ services:
       - DBHOST=mongodb://db:27017
       - DBNAME=metadata
     restart: 'no'
+
+  gateway:
+    image: go-gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+      target: prod
+    container_name: go-gateway
+    ports:
+      - "4006:80"
+    environment:
+      - PORT=80
+      - METADATA_HOST=http://metadata
+    restart: 'no'
     

@@ -19,17 +19,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Handler struct {
+type GatewayHandler struct {
 	metadataService *metadata.MetadataService
 }
 
-func NewHandler(metadataService *metadata.MetadataService) *Handler {
-	return &Handler{
+func NewGatewayHandler(metadataService *metadata.MetadataService) *GatewayHandler {
+	return &GatewayHandler{
 		metadataService: metadataService,
 	}
 }
 
-func (h *Handler) index(c *fiber.Ctx) error {
+func (h *GatewayHandler) index(c *fiber.Ctx) error {
 	videos, err := h.metadataService.SelectMetadata()
 	if err != nil {
 		return err
@@ -40,8 +40,28 @@ func (h *Handler) index(c *fiber.Ctx) error {
 	})
 }
 
+func (h *GatewayHandler) upload(c *fiber.Ctx) error {
+	return c.Render("upload-video", fiber.Map{})
+}
+
+func (h *GatewayHandler) history(c *fiber.Ctx) error {
+	return c.Render("history", fiber.Map{})
+}
+
+func (h *GatewayHandler) video(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == "" {
+		return c.Redirect("/")
+	}
+
+	return c.Render("play-video", fiber.Map{})
+}
+
 func Register(router fiber.Router, metadataService *metadata.MetadataService) {
-	handler := NewHandler(metadataService)
+	handler := NewGatewayHandler(metadataService)
 
 	router.Get("/", handler.index)
+	router.Get("/upload", handler.upload)
+	router.Get("/history", handler.history)
+	router.Get("/video", handler.video)
 }
