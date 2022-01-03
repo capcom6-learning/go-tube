@@ -44,8 +44,9 @@ func (r *HistoryRepository) Insert(path string) error {
 	defer cancelFunc()
 
 	record := History{
-		ID:   primitive.NewObjectID(),
-		Path: path,
+		ID:      primitive.NewObjectID(),
+		Path:    path,
+		Watched: time.Now(),
 	}
 
 	_, err := r.collection.InsertOne(ctx, record)

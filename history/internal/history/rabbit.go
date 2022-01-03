@@ -89,9 +89,10 @@ func (r *Rabbit) Listen() error {
 				continue
 			}
 
-			log.Printf("%v\r\n", msg)
-
-			r.repository.Insert(msg.VideoPath)
+			if err := r.repository.Insert(msg.VideoPath); err != nil {
+				log.Printf("%v\r\n", err)
+				continue
+			}
 
 			d.Acknowledger.Ack(d.DeliveryTag, false)
 		}
