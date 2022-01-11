@@ -1,4 +1,4 @@
-package internal
+package metadata
 
 import (
 	"context"
@@ -40,7 +40,7 @@ func NewMetadataRepository(conn string, database string) (*MetadataRepository, e
 	}, nil
 }
 
-func (r *MetadataRepository) SelectMetadata() ([]Metadata, error) {
+func (r *MetadataRepository) SelectAll() ([]Metadata, error) {
 	ctx, cancelFunc := makeContext()
 	defer cancelFunc()
 
@@ -72,6 +72,20 @@ func (r *MetadataRepository) GetById(id string) (*Metadata, error) {
 	}
 
 	return &metadata, nil
+}
+
+func (r *MetadataRepository) Create(metadata *Metadata) (*Metadata, error) {
+	metadata.ID = primitive.NewObjectID()
+
+	ctx, cancelFunc := makeContext()
+	defer cancelFunc()
+
+	_, err := r.collection.InsertOne(ctx, metadata)
+	if err != nil {
+		return nil, err
+	}
+
+	return metadata, nil
 }
 
 func (r *MetadataRepository) Disconnect() error {

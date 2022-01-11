@@ -1,4 +1,4 @@
-package internal
+package metadata
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
