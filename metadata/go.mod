@@ -3,7 +3,7 @@ module github.com/capcom6/go-tube/metadata
 go 1.17
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.1
+	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/joho/godotenv v1.4.0
 	go.mongodb.org/mongo-driver v1.8.1
 )
