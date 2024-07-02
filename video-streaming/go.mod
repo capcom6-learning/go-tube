@@ -3,7 +3,7 @@ module github.com/capcom6/go-tube/video-streaming
 go 1.17
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.1
+	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/joho/godotenv v1.4.0
 	github.com/streadway/amqp v1.0.0
 )
